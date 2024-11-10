@@ -22,13 +22,13 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_wrapper: false
 
       - name: Terraform Init
         id: init
-        run: terraform init -backend-config="bucket=$TF_STATE_BUCKET_NAME" -backend-config="region=ap-southeast-1"
+        run: terraform init -backend-config="bucket=$TF_STATE_BUCKET_NAME" -backend-config="region=ap-southeast-1" -backend-config="key=terraform.tfstate"
         working-directory: ./terraform
 
       - name: Terraform Plan
