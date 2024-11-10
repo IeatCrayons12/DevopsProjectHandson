@@ -74,9 +74,10 @@ resource "aws_key_pair" "deployer" {
 }
 
 locals {
-  private_key = file("/Users/khamushu/keyforaws")
-  public_key  = file("/Users/khamushu/keyforaws.pub")
+  private_key = file("${path.module}/keys/keyforaws")
+  public_key  = file("${path.module}/keys/keyforaws.pub")
 }
+
 
 output "instance_public_ip" {
     value =aws_instance.server.public_ip
