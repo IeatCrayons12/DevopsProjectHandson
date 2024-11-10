@@ -24,7 +24,7 @@ resource "aws_instance" "server" {
      type = "ssh"
      host = self.public_ip
      user = "ubuntu"
-     private_key = var.private_key
+     private_key = local.private_key
      timeout = "4m"
     }
     tags = {
@@ -70,7 +70,12 @@ resource "aws_security_group" "maingroup" {
 
 resource "aws_key_pair" "deployer" {
     key_name = "deployer-key"
-    public_key = var.public_key
+    public_key = local.public_key
+}
+
+locals {
+  private_key = file("/Users/khamushu/keyforaws")
+  public_key  = file("/Users/khamushu/keyforaws.pub")
 }
 
 output "instance_public_ip" {

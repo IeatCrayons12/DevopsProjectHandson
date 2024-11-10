@@ -5,16 +5,12 @@ variable "region" {
 }
 
 # SSH Private Key for EC2 instances
-variable "private_key" {
-  description = "Private SSH key for EC2 instances"
-  type        = string
-  sensitive   = true
-  default = file("/Users/khamushu/keyforaws")
-}
+# variable "private_key" {
+#   description = "Path to the private key"
+#   type        = string
+# }
 
-variable "public_key" {
-  description = "Private SSH key for EC2 instances"
-  type        = string
-  sensitive   = true
-  default     = file("/Users/khamushu/keyforaws.pub")
-}
+# variable "public_key" {
+#   description = "Path to the public key"
+#   type        = string
+# }
