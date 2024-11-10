@@ -4,12 +4,6 @@ variable "region" {
   default     = "us-east-1"
 }
 
-variable "key_name" {
-  description = "The name of the SSH key pair"
-  type        = string
-}
-
-
 # SSH Private Key for EC2 instances
 # variable "private_key" {
 #   description = "Path to the private key"
