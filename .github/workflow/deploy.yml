@@ -46,3 +46,4 @@ jobs:
         if: success()
         run: terraform apply PLAN
         working-directory: ./terraform
+

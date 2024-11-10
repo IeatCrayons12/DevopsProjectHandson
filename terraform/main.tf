@@ -17,7 +17,7 @@ provider "aws" {
 resource "aws_instance" "server" {
     ami = "ami-052efd3df9dad4825"
     instance_type = "t2.micro"
-    key_name = aws_key_pair.deployer.key_name
+    key_name = aws_key_pair.deployer.key_name 
     vpc_security_group_ids = [aws_security_group.maingroup.id]
     iam_instance_profile = aws_iam_instance_profile.ec2-profile.name
     connection {
@@ -34,52 +34,42 @@ resource "aws_instance" "server" {
 
 resource "aws_iam_instance_profile" "ec2-profile"{
     name = "ec2-profile"
-    role = "EC2-ECR-AUTH"
+    role = "forDevopsProject"
 
 }
 
-resource "aws_security_group" "maingroup"{
-    egress = {
-        {
-            cidr_blocks = ["0.0.0.0/0"]
-            description = ""
-            from_port = 0
-            ipv6_cidr_blocks = []
-            prefix_list_ids = []
-            protocol = "-1"
-            security_groups = []
-            self = false 
-            to_port = 0
-        }
+resource "aws_security_group" "maingroup" {
+    egress {
+        cidr_blocks = ["0.0.0.0/0"]
+        description = "Allow all outbound traffic"
+        from_port   = 0
+        to_port     = 0
+        protocol    = "-1"  # -1 means all protocols
+        self        = false
     }
-    ingress = [
-        {
-           cidr_blocks = ["0.0.0.0/0"]
-            description = ""
-            from_port = 22
-            ipv6_cidr_blocks = []
-            prefix_list_ids = []
-            protocol = "tcp"
-            security_groups = []
-            self = false 
-            to_port = 22
-            },
-             {
-           cidr_blocks = ["0.0.0.0/0"]
-            description = ""
-            from_port = 80
-            ipv6_cidr_blocks = []
-            prefix_list_ids = []
-            protocol = "tcp"
-            security_groups = []
-            self = false 
-            to_port = 80
-            }
-    ]
+
+    ingress {
+        cidr_blocks = ["0.0.0.0/0"]
+        description = "Allow SSH access"
+        from_port   = 22
+        to_port     = 22
+        protocol    = "tcp"
+        self        = false
+    }
+
+    ingress {
+        cidr_blocks = ["0.0.0.0/0"]
+        description = "Allow HTTP access"
+        from_port   = 80
+        to_port     = 80
+        protocol    = "tcp"
+        self        = false
+    }
 }
+
 
 resource "aws_key_pair" "deployer" {
-    key_name = var.key_name
+    key_name = "deployer-key"
     public_key = var.public_key
 }
 
