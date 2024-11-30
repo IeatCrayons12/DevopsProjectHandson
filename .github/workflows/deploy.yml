@@ -36,18 +36,19 @@ jobs:
         run: |
           terraform plan \
             -var="region=ap-southeast-1" \
-            -var="private_key=${{ secrets.PRIVATE_SSH_KEY }}" \
-            -var="public_key=${{ secrets.PUBLIC_SSH_KEY }}" \
+            -var="private_key=${{ secrets.AWS_SSH_ACCESS_KEY }}" \
+            -var="public_key=${{ secrets.AWS_SSH_ACCESS_PUBLIC }}" \
             -out=PLAN
         working-directory: ./terraform
+      
       
 
       - name: Terraform Apply
         if: success()
         run: terraform apply -auto-approve PLAN
         env: 
-          PRIVATE_SSH_KEY: ${{ secrets.PRIVATE_SSH_KEY }}
-          PUBLIC_SSH_KEY: ${{ secrets.PUBLIC_SSH_KEY }}
+          PRIVATE_SSH_KEY: ${{ secrets.AWS_SSH_ACCESS_KEY }}
+          PUBLIC_SSH_KEY: ${{ secrets.AWS_SSH_ACCESS_PUBLIC }}
         working-directory: ./terraform
   
   deploy-app:
