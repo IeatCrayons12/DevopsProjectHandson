@@ -15,7 +15,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "server" {
-    ami = "ami-052efd3df9dad4825"
+    ami = "ami-047126e50991d067b"
     instance_type = "t2.micro"
     key_name = aws_key_pair.deployer.key_name 
     vpc_security_group_ids = [aws_security_group.maingroup.id]
@@ -24,7 +24,7 @@ resource "aws_instance" "server" {
      type = "ssh"
      host = self.public_ip
      user = "ubuntu"
-     private_key = local.private_key
+     private_key = var.private_key
      timeout = "4m"
     }
     tags = {
@@ -70,12 +70,7 @@ resource "aws_security_group" "maingroup" {
 
 resource "aws_key_pair" "deployer" {
     key_name = "deployer-key"
-    public_key = local.public_key
-}
-
-locals {
-  private_key = file("${path.module}/keys/keyforaws")
-  public_key  = file("${path.module}/keys/keyforaws.pub")
+    public_key = var.public_key
 }
 
 

@@ -5,12 +5,12 @@ variable "region" {
 }
 
 # SSH Private Key for EC2 instances
-# variable "private_key" {
-#   description = "Path to the private key"
-#   type        = string
-# }
+variable "private_key" {
+  description = "Path to the private key"
+  type        = string
+}
 
-# variable "public_key" {
-#   description = "Path to the public key"
-#   type        = string
-# }
+variable "public_key" {
+  description = "Path to the public key"
+  type        = string
+}
