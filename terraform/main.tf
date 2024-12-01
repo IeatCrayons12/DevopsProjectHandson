@@ -25,7 +25,7 @@ resource "aws_key_pair" "deployer" {
 resource "aws_instance" "server" {
   ami                    = "ami-047126e50991d067b"
   instance_type           = "t2.micro"
-  subnet_id               = "subnet-0123456789abcdef0"  # Use your existing subnet ID
+  subnet_id               = "subnet-098da2b1547225acf"  # Use your existing subnet ID
   key_name                = aws_key_pair.deployer.key_name
   vpc_security_group_ids  = [aws_security_group.maingroup.id]
   iam_instance_profile    = aws_iam_instance_profile.ec2-profile.name
@@ -78,13 +78,16 @@ resource "aws_security_group" "maingroup" {
 }
 
 # Route Table for Public Subnet
+# resource "aws_internet_gateway" "igw" {
+#   vpc_id = "vpc-0f405f5a7c03d39b1"  # Your existing VPC ID
+# }
 
 resource "aws_route_table" "public_rt" {
   vpc_id = "vpc-0f405f5a7c03d39b1"  # Your existing VPC ID
 
   route {
     cidr_block = "0.0.0.0/0"  # Route all traffic to the IGW
-    gateway_id = aws_internet_gateway.igw.id
+    gateway_id = "igw-0551c54f95991bdd8"
   }
 }
 
