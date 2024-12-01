@@ -78,9 +78,6 @@ resource "aws_security_group" "maingroup" {
 }
 
 # Route Table for Public Subnet
-resource "aws_internet_gateway" "igw" {
-  vpc_id = "vpc-0f405f5a7c03d39b1"  # Your existing VPC ID
-}
 
 resource "aws_route_table" "public_rt" {
   vpc_id = "vpc-0f405f5a7c03d39b1"  # Your existing VPC ID
@@ -92,7 +89,7 @@ resource "aws_route_table" "public_rt" {
 }
 
 resource "aws_route_table_association" "public_assoc" {
-  subnet_id      = "subnet-0123456789abcdef0"  # Use your existing subnet ID
+  subnet_id      = "subnet-098da2b1547225acf"  # Use your existing subnet ID
   route_table_id = aws_route_table.public_rt.id
 }
 
