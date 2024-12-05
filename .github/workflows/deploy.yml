@@ -60,9 +60,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy-infra
     steps:
-      - env:
-          SERVER_PUBLIC_IP: ${{needs.deploy-infra.outputs.output1}}
-        run: echo "$SERVER_PUBLIC_IP"
+      - name: Set SERVER_PUBLIC_IP from deploy-infra
+        run: echo "SERVER_PUBLIC_IP=${{ needs.deploy-infra.outputs.output1 }}" >> $GITHUB_ENV
+
+      - name: Debug env SERVER_PUBLIC_IP
+        run: echo "SERVER_PUBLIC_IP is $SERVER_PUBLIC_IP"
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -84,7 +86,7 @@ jobs:
       - name: Docker Deploy image to EC2
         uses: appleboy/ssh-action@v0.1.0
         with:
-          host: ${{ $SERVER_PUBLIC_IP }}
+          host: ${{ env.SERVER_PUBLIC_IP }}
           username: ubuntu
           key: ${{ env.PRIVATE_SSH_KEY }}
           envs: PRIVATE_SSH_KEY,REGISTRY,REPOSITORY,IMAGE_TAG,ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,TF_STATE_BUCKET_NAME,AWS_DEFAULT_REGION,AWS_REGION
