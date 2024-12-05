@@ -16,7 +16,8 @@ env:
 jobs:
   deploy-infra:
     runs-on: ubuntu-latest
-
+    outputs:
+      output1: ${{ steps.set-ip.outputs.SERVER_PUBLIC_IP }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -51,15 +52,12 @@ jobs:
         id: apply
 
       - name: Set output variables
-        run: echo "SERVER_PUBLIC_IP=$(terraform output -raw instance_public_ip)" >> $GITHUB_ENV
+        run: echo "SERVER_PUBLIC_IP=$(terraform output -raw instance_public_ip)" >> $GITHUB_OUTPUT
         working-directory: ./terraform
+        id: set-ip
 
       - name: Debug Server IP
         run: echo "SERVER_PUBLIC_IP=$SERVER_PUBLIC_IP"
-
-    outputs:
-     server_public_ip: ${{ steps.apply.outputs.SERVER_PUBLIC_IP }}
-          
         # This will help you debug if SERVER_PUBLIC_IP is set correctly in the workflow.
 
   deploy-app:
@@ -70,7 +68,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set IP env variable
-        run: echo "SERVER_PUBLIC_IP=${{ needs.deploy-infra.outputs.server_public_ip }}" >> $GITHUB_ENV
+        run: echo "SERVER_PUBLIC_IP=${{ needs.deploy-infra.outputs.output1 }}" >> $GITHUB_ENV
       
         # Ensure that SERVER_PUBLIC_IP is set and passed correctly from the deploy-infra job
 
