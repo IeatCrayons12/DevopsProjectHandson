@@ -58,7 +58,7 @@ jobs:
         run: echo "SERVER_PUBLIC_IP=$SERVER_PUBLIC_IP"
 
     outputs:
-      server_public_ip: ${{ steps.outputs.outputs.outputs.server_public_ip }}
+     server_public_ip: ${{ steps.apply.outputs.SERVER_PUBLIC_IP }}
           
         # This will help you debug if SERVER_PUBLIC_IP is set correctly in the workflow.
 
@@ -70,9 +70,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set IP env variable
-        run: |
-          echo "SERVER_PUBLIC_IP=${{ needs.deploy-infra.outputs.server_public_ip }}" >> $GITHUB_ENV
-          echo "$SERVER_PUBLIC_IP"
+        run: echo "SERVER_PUBLIC_IP=${{ needs.deploy-infra.outputs.server_public_ip }}" >> $GITHUB_ENV
       
         # Ensure that SERVER_PUBLIC_IP is set and passed correctly from the deploy-infra job
 
