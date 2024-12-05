@@ -83,70 +83,69 @@ jobs:
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ./nodeapp
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
-          - name: Docker Deploy image to EC2
-          uses: appleboy/ssh-action@v0.1.0
-          with:
-            host: ${{ env.SERVER_PUBLIC_IP }}
-            username: ubuntu
-            key: ${{ env.PRIVATE_SSH_KEY }}
-            envs: PRIVATE_SSH_KEY,REGISTRY,REPOSITORY,IMAGE_TAG,ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,TF_STATE_BUCKET_NAME,AWS_DEFAULT_REGION,AWS_REGION
-            script: |
-             #!/bin/bash
+      - name: Docker Deploy image to EC2
+        uses: appleboy/ssh-action@v0.1.0
+        with:
+          host: ${{ env.SERVER_PUBLIC_IP }}
+          username: ubuntu
+          key: ${{ env.PRIVATE_SSH_KEY }}
+          envs: PRIVATE_SSH_KEY,REGISTRY,REPOSITORY,IMAGE_TAG,ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,TF_STATE_BUCKET_NAME,AWS_DEFAULT_REGION,AWS_REGION
+          script: |
+            #!/bin/bash
 
-             # Set DEBIAN_FRONTEND to noninteractive to avoid the 'Dialog' error
-             export DEBIAN_FRONTEND=noninteractive
+            # Set DEBIAN_FRONTEND to noninteractive to avoid the 'Dialog' error
+            export DEBIAN_FRONTEND=noninteractive
 
-             # Print environment variables to debug
-             echo "REGISTRY is: $REGISTRY"
-             echo "IMAGE_TAG is: $IMAGE_TAG"
+            # Print environment variables to debug
+            echo "REGISTRY is: $REGISTRY"
+            echo "IMAGE_TAG is: $IMAGE_TAG"
 
-             # Update system and install dependencies
-             echo "Running: sudo apt-get update"
-             sudo apt-get update -y
-             echo "Running: sudo apt-get install -y apt-transport-https ca-certificates curl unzip software-properties-common"
-             sudo apt-get install -y apt-transport-https ca-certificates curl unzip software-properties-common
-             echo "Running: sudo apt-get install -y gnupg"
-             sudo apt-get install -y gnupg
+            # Update system and install dependencies
+            echo "Running: sudo apt-get update"
+            sudo apt-get update -y
+            echo "Running: sudo apt-get install -y apt-transport-https ca-certificates curl unzip software-properties-common"
+            sudo apt-get install -y apt-transport-https ca-certificates curl unzip software-properties-common
+            echo "Running: sudo apt-get install -y gnupg"
+            sudo apt-get install -y gnupg
 
-             # Install or Update AWS CLI
-             echo "Running: curl 'https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip' -o awscliv2.zip"
-             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-             echo "Running: unzip -o awscliv2.zip"
-             unzip -o awscliv2.zip
-             echo "Running: sudo ./aws/install --update"
-             sudo ./aws/install --update
+            # Install or Update AWS CLI
+            echo "Running: curl 'https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip' -o awscliv2.zip"
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            echo "Running: unzip -o awscliv2.zip"
+            unzip -o awscliv2.zip
+            echo "Running: sudo ./aws/install --update"
+            sudo ./aws/install --update
 
-             # Install Docker
-             echo "Running: sudo install -m 0755 -d /etc/apt/keyrings"
-             sudo install -m 0755 -d /etc/apt/keyrings
-             echo "Running: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor --batch --yes -o /etc/apt/keyrings/docker.gpg"
-             curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor --batch --yes -o /etc/apt/keyrings/docker.gpg
-             echo "Running: sudo chmod a+r /etc/apt/keyrings/docker.gpg"
-             sudo chmod a+r /etc/apt/keyrings/docker.gpg
+            # Install Docker
+            echo "Running: sudo install -m 0755 -d /etc/apt/keyrings"
+            sudo install -m 0755 -d /etc/apt/keyrings
+            echo "Running: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor --batch --yes -o /etc/apt/keyrings/docker.gpg"
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor --batch --yes -o /etc/apt/keyrings/docker.gpg
+            echo "Running: sudo chmod a+r /etc/apt/keyrings/docker.gpg"
+            sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
-             # Add Docker's official repository to apt sources
-             echo "Running: echo 'deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable' | sudo tee /etc/apt/sources.list.d/docker.list"
-             echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+            # Add Docker's official repository to apt sources
+            echo "Running: echo 'deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable' | sudo tee /etc/apt/sources.list.d/docker.list"
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-             # Update and install Docker
-             echo "Running: sudo apt-get update"
-             sudo apt-get update -y 
-             echo "Running: sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin"
-             sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+            # Update and install Docker
+            echo "Running: sudo apt-get update"
+            sudo apt-get update -y 
+            echo "Running: sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin"
+            sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-             # Authenticate Docker with AWS ECR
-             echo "Running: $(aws ecr get-login-password --region ap-southeast-1 | sudo docker login --username AWS --password-stdin $REGISTRY)"
-             $(aws ecr get-login-password --region ap-southeast-1 | sudo docker login --username AWS --password-stdin $REGISTRY)
+            # Authenticate Docker with AWS ECR
+            echo "Running: $(aws ecr get-login-password --region ap-southeast-1 | sudo docker login --username AWS --password-stdin $REGISTRY)"
+            $(aws ecr get-login-password --region ap-southeast-1 | sudo docker login --username AWS --password-stdin $REGISTRY)
 
-             # Stop and remove any existing container
-             echo "Running: sudo docker stop myappcontainer || true" 
-             sudo docker stop myappcontainer || true
-             echo "Running: sudo docker rm myappcontainer || true"
-             sudo docker rm myappcontainer || true
+            # Stop and remove any existing container
+            echo "Running: sudo docker stop myappcontainer || true" 
+            sudo docker stop myappcontainer || true
+            echo "Running: sudo docker rm myappcontainer || true"
+            sudo docker rm myappcontainer || true
 
-             # Pull and run the new Docker image
-             echo "Running: sudo docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG"
-             sudo docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG
-             echo "Running: sudo docker run -d --name myappcontainer -p 80:8000 $REGISTRY/$REPOSITORY:$IMAGE_TAG"
-             sudo docker run -d --name myappcontainer -p 80:8000 $REGISTRY/$REPOSITORY:$IMAGE_TAG
-
+            # Pull and run the new Docker image
+            echo "Running: sudo docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG"
+            sudo docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG
+            echo "Running: sudo docker run -d --name myappcontainer -p 80:8000 $REGISTRY/$REPOSITORY:$IMAGE_TAG"
+            sudo docker run -d --name myappcontainer -p 80:8000 $REGISTRY/$REPOSITORY:$IMAGE_TAG
