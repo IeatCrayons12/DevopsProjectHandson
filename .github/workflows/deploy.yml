@@ -92,6 +92,7 @@ jobs:
           envs: PRIVATE_SSH_KEY,REGISTRY,REPOSITORY,IMAGE_TAG,ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,TF_STATE_BUCKET_NAME,AWS_DEFAULT_REGION,AWS_REGION
           script: |
             export DEBIAN_FRONTEND=noninteractive
+            echo $REGISTRY
 
             # Update system and install dependencies
             sudo apt-get update
