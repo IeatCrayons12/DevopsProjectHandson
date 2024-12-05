@@ -56,10 +56,6 @@ jobs:
         working-directory: ./terraform
         id: set-ip
 
-      - name: Debug Server IP
-        run: echo "SERVER_PUBLIC_IP=$SERVER_PUBLIC_IP"
-        # This will help you debug if SERVER_PUBLIC_IP is set correctly in the workflow.
-
   deploy-app:
     runs-on: ubuntu-latest
     needs: deploy-infra
