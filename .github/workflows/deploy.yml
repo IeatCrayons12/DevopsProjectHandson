@@ -93,12 +93,18 @@ jobs:
           script: |
             export DEBIAN_FRONTEND=noninteractive
             sudo apt-get update
-            sudo apt-get install -y unzip ca-certificates curl gnupg
+            sudo apt install -y apt-transport-https ca-certificates curl unzip software-properties-common
 
-            # Install AWS CLI
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
+            # Install or Update AWS CLI
+            if ! command -v aws &> /dev/null; then
+              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+              unzip -o awscliv2.zip
+              sudo ./aws/install
+            else
+              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+              unzip -o awscliv2.zip
+              sudo ./aws/install --update
+            fi
 
             # Install Docker
             sudo install -m 0755 -d /etc/apt/keyrings
