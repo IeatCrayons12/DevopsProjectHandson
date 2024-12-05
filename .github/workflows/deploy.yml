@@ -94,6 +94,7 @@ jobs:
             export DEBIAN_FRONTEND=noninteractive
             printenv
             echo "REGISTRY is: $REGISTRY"
+            echo "IMAGE_TAG is: $IMAGE_TAG"
 
             # Update system and install dependencies
             sudo apt-get update
