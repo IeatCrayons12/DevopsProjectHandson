@@ -92,19 +92,15 @@ jobs:
           envs: PRIVATE_SSH_KEY,REGISTRY,REPOSITORY,IMAGE_TAG,ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,TF_STATE_BUCKET_NAME,AWS_DEFAULT_REGION,AWS_REGION
           script: |
             export DEBIAN_FRONTEND=noninteractive
+
+            # Update system and install dependencies
             sudo apt-get update
-            sudo apt install -y apt-transport-https ca-certificates curl unzip software-properties-common
+            sudo apt-get install -y apt-transport-https ca-certificates curl unzip software-properties-common
 
             # Install or Update AWS CLI
-            if ! command -v aws &> /dev/null; then
-              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-              unzip -o awscliv2.zip
-              sudo ./aws/install
-            else
-              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-              unzip -o awscliv2.zip
-              sudo ./aws/install --update
-            fi
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip -o awscliv2.zip
+            sudo ./aws/install --update
 
             # Install Docker
             sudo install -m 0755 -d /etc/apt/keyrings
