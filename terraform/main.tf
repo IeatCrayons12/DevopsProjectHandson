@@ -77,10 +77,7 @@ resource "aws_security_group" "maingroup" {
   }
 }
 
-# Route Table for Public Subnet
-# resource "aws_internet_gateway" "igw" {
-#   vpc_id = "vpc-0f405f5a7c03d39b1"  # Your existing VPC ID
-# }
+/////
 
 resource "aws_route_table" "public_rt" {
   vpc_id = "vpc-0f405f5a7c03d39b1"  # Your existing VPC ID
