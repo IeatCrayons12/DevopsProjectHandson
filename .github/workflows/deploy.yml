@@ -79,6 +79,12 @@ jobs:
           echo "Docker Username: AWS"
           echo "Docker Password: $(aws ecr get-login-password --region ap-southeast-1 | head -c 8)******"  # Mask most of the password for security
           aws ecr get-login-password --region ap-southeast-1 > /dev/null || echo "Failed to fetch ECR password"
+          
+      - name: Login to ECR
+        run: |
+          echo "Attempting to log in to ECR"
+          aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 637423177853.dkr.ecr.ap-southeast-1.amazonaws.com || exit 1
+          echo "Login to ECR succeeded!"
 
       - name: Build, push docker image
         env:
