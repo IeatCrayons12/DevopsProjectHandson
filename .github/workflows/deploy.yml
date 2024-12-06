@@ -73,6 +73,13 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Debug ECR Login Information
+        run: |
+          echo "ECR Registry: ${{ steps.login-ecr.outputs.registry }}"
+          echo "Docker Username: AWS"
+          echo "Docker Password: $(aws ecr get-login-password --region ap-southeast-1 | head -c 8)******"  # Mask most of the password for security
+          aws ecr get-login-password --region ap-southeast-1 > /dev/null || echo "Failed to fetch ECR password"
+
       - name: Build, push docker image
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
