@@ -134,6 +134,7 @@ jobs:
 
             # Print environment variables to debug
             echo "REGISTRY is: $REGISTRY"
+            echo "REGISTRY 2 is ${{ steps.login-ecr.outputs.registry }}"
             echo "IMAGE_TAG is: $IMAGE_TAG"
 
             # Update system and install dependencies
