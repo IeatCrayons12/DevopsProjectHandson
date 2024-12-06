@@ -113,7 +113,17 @@ jobs:
           host: ${{ env.SERVER_PUBLIC_IP }}
           username: ubuntu
           key: ${{ env.PRIVATE_SSH_KEY }}
-          envs: PRIVATE_SSH_KEY,REGISTRY,REPOSITORY,IMAGE_TAG,ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,TF_STATE_BUCKET_NAME,AWS_DEFAULT_REGION,AWS_REGION
+          envs: |
+           PRIVATE_SSH_KEY=${{ env.PRIVATE_SSH_KEY }}
+           REGISTRY=${{ env.REGISTRY }}
+           REPOSITORY=${{ env.REPOSITORY }}
+           IMAGE_TAG=${{ env.IMAGE_TAG }}
+           ACCESS_KEY_ID=${{ secrets.ACCESS_KEY_ID }}
+           AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+           TF_STATE_BUCKET_NAME=${{ secrets.TF_STATE_BUCKET_NAME }}
+           AWS_DEFAULT_REGION=${{ secrets.AWS_DEFAULT_REGION }}
+           AWS_REGION=${{ secrets.AWS_REGION }}
+
           script: |
             #!/bin/bash
 
