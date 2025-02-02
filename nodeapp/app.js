@@ -5,7 +5,7 @@ app.get("/",(req,res)=>{
     res.send("Service is running");
 })
 
-app.listen(8080,()=>{
+app.listen(8080,'0.0.0.0',()=>{
     console.log("Server is up");
 })
 // hello
