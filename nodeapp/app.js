@@ -8,3 +8,5 @@ app.get("/",(req,res)=>{
 app.listen(8080,()=>{
     console.log("Server is up");
 })
+
+// ip to access http://https://54.169.146.197/:8080
